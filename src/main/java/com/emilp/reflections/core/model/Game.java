@@ -3,18 +3,36 @@ package com.emilp.reflections.core.model;
 import lombok.Builder;
 import lombok.Value;
 
+import javax.persistence.*;
 import java.net.URI;
 import java.util.Date;
 
 @Value
 @Builder
+@Entity
+@Table
 public class Game {
+    @Id
+    @SequenceGenerator(
+            name = "game_sequence",
+            sequenceName = "game_sequence",
+            allocationSize = 1)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "game_sequence"
+    )
 
     private Long id;
+    @Enumerated(EnumType.ORDINAL)
     private GameType gameType;
+    @Enumerated(EnumType.ORDINAL)
     private GameMap map;
     private URI vodLink;
-    private Stats stats;
+    private Integer kills;
+    private Integer deaths;
+    private Integer assists;
     private String reflections;
     private Date date;
+
+    // behöver constructor. ALlt utom ID :)
 }

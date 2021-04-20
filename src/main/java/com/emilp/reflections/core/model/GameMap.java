@@ -1,5 +1,7 @@
 package com.emilp.reflections.core.model;
 
+import javax.persistence.Entity;
+
 public enum GameMap {
 
     ICEBOX("icebox"),

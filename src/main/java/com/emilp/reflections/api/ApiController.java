@@ -2,17 +2,11 @@ package com.emilp.reflections.api;
 
 import com.emilp.reflections.GameService;
 import com.emilp.reflections.core.model.Game;
-import com.emilp.reflections.core.model.GameMap;
-import com.emilp.reflections.core.model.GameType;
-import com.emilp.reflections.core.model.Stats;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
