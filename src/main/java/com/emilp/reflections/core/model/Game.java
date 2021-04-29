@@ -1,13 +1,14 @@
 package com.emilp.reflections.core.model;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.net.URI;
-import java.util.Date;
+import java.time.LocalDate;
 
-@Value
+@Data
 @Builder
 @Entity
 @Table
@@ -32,7 +33,35 @@ public class Game {
     private Integer deaths;
     private Integer assists;
     private String reflections;
-    private Date date;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate date;
 
-    // behöver constructor. ALlt utom ID :)
+    public Game() {
+
+    }
+
+    public Game(GameType gameType, GameMap map, URI vodLink, Integer kills, Integer deaths, Integer assists, String reflections, LocalDate date) {
+        this.gameType = gameType;
+        this.map = map;
+        this.vodLink = vodLink;
+        this.kills = kills;
+        this.deaths = deaths;
+        this.assists = assists;
+        this.reflections = reflections;
+        this.date = date;
+    }
+
+    public Game(Long id, GameType gameType, GameMap map, URI vodLink, Integer kills, Integer deaths, Integer assists, String reflections, LocalDate date) {
+        this.id = id;
+        this.gameType = gameType;
+        this.map = map;
+        this.vodLink = vodLink;
+        this.kills = kills;
+        this.deaths = deaths;
+        this.assists = assists;
+        this.reflections = reflections;
+        this.date = date;
+    }
+
+
 }

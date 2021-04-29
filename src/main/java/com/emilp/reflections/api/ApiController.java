@@ -1,6 +1,7 @@
 package com.emilp.reflections.api;
 
 import com.emilp.reflections.GameService;
+import com.emilp.reflections.core.exceptions.GameException;
 import com.emilp.reflections.core.model.Game;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,33 +18,25 @@ public class ApiController {
     private GameService gameService;
 
     @GetMapping("/games")
-    public ResponseEntity<List<Game>> getGames() {
-        return ResponseEntity.ok(gameService.getGames());
+    public List<Game> getGames() {
+        return gameService.getGames();
     }
     @GetMapping("/game")
-    public ResponseEntity<Game> getGame(@RequestParam long id) {
-        return ResponseEntity.ok(gameService.getGame(id));
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<Game> getTestGame() {
-        return ResponseEntity.ok(gameService.getSampleGame(123145L));
+    public Game getGame(@RequestParam long id) {
+        log.info("Getting game with id {}", id);
+        return gameService.getGame(id);
     }
 
     @PostMapping("/add")
-    public ResponseEntity addGame(@RequestBody Game game) {
-
-        if (gameService.addGame(game) != null) {
-            log.info("adding {}", game);
-            return ResponseEntity.ok(game);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-
+    public void addGame(@RequestBody Game game) {
+        log.info("Adding game {}", game);
+        gameService.addGame(game);
     }
 
-
-
-
+    @PostMapping("/update")
+    public Game updateGame(@RequestBody Game game) throws GameException {
+        log.info("Updating game with {}", game);
+        return gameService.updateGame(game);
+    }
 
 }

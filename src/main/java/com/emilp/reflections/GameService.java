@@ -1,20 +1,16 @@
 package com.emilp.reflections;
 
+import com.emilp.reflections.core.exceptions.GameException;
 import com.emilp.reflections.core.model.Game;
 import com.emilp.reflections.core.model.GameMap;
 import com.emilp.reflections.core.model.GameType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class GameService {
@@ -22,7 +18,6 @@ public class GameService {
 
     private final GameRepository gameRepository;
 
-    @Autowired
     public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
@@ -41,9 +36,40 @@ public class GameService {
         return gameRepository.save(game);
     }
 
+    public Game updateGame(Game game) throws GameException {
+        Game updatedGame = gameRepository.findById(game.getId())
+                .map(oldGame -> mergeGame(oldGame, game))
+                .orElseThrow(() -> new GameException("No game exists with id " + game.getId()));
+        return gameRepository.save(updatedGame);
+    }
+
+    private Game mergeGame(Game existingGame, Game updatedGame) {
+        Long id = existingGame.getId();
+        GameType gameType = updatedGame.getGameType() != null ? updatedGame.getGameType() : existingGame.getGameType();
+        GameMap gameMap = updatedGame.getMap() != null ? updatedGame.getMap() : existingGame.getMap();
+        URI vodLink = updatedGame.getVodLink() != null ? updatedGame.getVodLink() : existingGame.getVodLink();
+        Integer kills = updatedGame.getKills() != null ? updatedGame.getKills() : existingGame.getKills();
+        Integer deaths = updatedGame.getDeaths() != null ? updatedGame.getDeaths() : existingGame.getDeaths();
+        Integer assists = updatedGame.getAssists() != null ? updatedGame.getAssists() : existingGame.getAssists();
+        String reflections = updatedGame.getReflections() != null ? updatedGame.getReflections() : existingGame.getReflections();
+        LocalDate date = existingGame.getDate();
+
+        return Game.builder()
+                .id(id)
+                .gameType(gameType)
+                .map(gameMap)
+                .vodLink(vodLink)
+                .kills(kills)
+                .deaths(deaths)
+                .assists(assists)
+                .reflections(reflections)
+                .date(date)
+                .build();
+    }
+
     public Game getSampleGame(Long id) {
         return Game.builder().id(id)
-                .date(Date.valueOf(LocalDate.now()))
+                .date(LocalDate.now())
                 .map(GameMap.ASCENT)
                 .gameType(GameType.SCRIM)
                 .vodLink(URI.create("https://www.twitch.tv/videos/989729800"))
